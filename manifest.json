@@ -1,0 +1,11 @@
+{
+    "name": "Data Scraper",
+    "version": "1.0.0",
+    "description": "This is a chrome extension that is going to scrape the website we're on and get some interesting results",
+    "manifest_version": 3,
+    "author": "Hitcho",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "Data Scraper"
+    }
+}
