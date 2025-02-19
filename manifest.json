@@ -4,8 +4,15 @@
     "description": "This is a chrome extension that is going to scrape the website we're on and get some interesting results",
     "manifest_version": 3,
     "author": "Hitcho",
+    "permissions":["scripting", "activeTab"],
     "action": {
-        "default_popup": "/index/index.html",
+        "default_popup": "popup.html",
         "default_title": "Data Scraper"
-    }
+    },
+    "content_scripts": [
+        {
+            "js": ["contentScript.js"],
+            "matches": ["<all_urls>"]
+        }
+    ]
 }
