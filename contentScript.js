@@ -25,19 +25,54 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   
   // Function to extract all text from the webpage
-  function extractTextFromPage() {
-    let allText = document.querySelector("main, article").innerText.trim();
-    let allTextFull = document.body.innerText.trim();
-    // console.log("Code goes here if website is not amazon", allText);
-    let textRatio = allText.length / allTextFull.length;
-    // alert(textRatio);
-    if (textRatio > 0.5) {
-      return allText;
-    }
-    else {
-      return allTextFull;
+//   function extractTextFromPage() {
+//     let allText = document.querySelector("main, article").innerText;
+//     let allTextFull = document.body.innerText;
+//     if (allText && allTextFull){
+//       let textRatio = allText.length / allTextFull.length;
+//       alert(textRatio);
+//       if (textRatio > 0.5) {
+//         console.log("Code is not going in else clause")
+//         return allText;
+//       }
+//       else {
+//         console.log("Code is going in else clause")
+//         return allTextFull;
+//     }
+//     }
+//     else {
+//     return allTextFull;
+//   }
+// }
+
+function extractTextFromPage(){
+  // let allTextFull = document.body.innerText;
+  // return allTextFull;
+
+  try {
+    let allText = document.querySelector("main, article").innerText ;
+    let allTextFull = document.body.innerText;
+    if (allText && allTextFull){
+      let textRatio = allText.length / allTextFull.length;
+      // alert(textRatio);
+      if (textRatio > 0.5) {
+        console.log("Code is not going in else clause")
+        return allText;
+      }
+      else {
+        console.log("Code is going in else clause")
+        return allTextFull;
+      }
     }
   }
+  catch(err) {
+    console.log(err);
+  }
+  finally{
+    let allTextFull = document.body.innerText;
+    return allTextFull;
+  }
+}
 
   function cleanData(text){
 
