@@ -30,8 +30,8 @@ function extractTextFromPage() {
     let allText = document.querySelector("main, article").innerText;
     let allTextFull = document.body.innerText;
     if (allText && allTextFull) {
-      let textRatio = allText.length / allTextFull.length;
-      // alert(textRatio);
+      textRatio = allText.length / allTextFull.length;
+      console.log(textRatio);
       if (textRatio > 0.5) {
         console.log("Code is not going in else clause");
         return allText;
@@ -39,12 +39,12 @@ function extractTextFromPage() {
         console.log("Code is going in else clause");
         return allTextFull;
       }
+    } else {
+      console.log("Code is going in 2nd else clause");
+      return allTextFull;
     }
   } catch (err) {
     console.log(err);
-  } finally {
-    let allTextFull = document.body.innerText;
-    return allTextFull;
   }
 }
 

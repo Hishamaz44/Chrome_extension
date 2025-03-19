@@ -1,8 +1,7 @@
 import puppeteer from "puppeteer";
 import fs from "fs";
 
-let allText, allTextFull, textRatio;
-let finalText;
+let allText, allTextFull;
 let collectedInfo = [];
 let collectedErrors = [];
 
@@ -78,9 +77,8 @@ async function testPuppeteer(url) {
 
     const page = await browser.newPage();
     await page.goto(url);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    let extractedText = await page.evaluate(() => {
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+    let { extractedText, textRatio } = await page.evaluate(() => {
       try {
         console.log("text goes into 2nd try");
         allText = document.querySelector("main, article").innerText;
@@ -88,23 +86,21 @@ async function testPuppeteer(url) {
         if (allText && allTextFull) {
           textRatio = allText.length / allTextFull.length;
           if (textRatio > 0.5) {
-            finalText = allText;
-            return allText;
+            return { extractedText: allText, textRatio };
           } else {
-            finalText = allTextFull;
-            return allTextFull;
+            return { extractedText: allTextFull, textRatio };
           }
+        } else {
+          return { extractedText: allTextFull, textRatio };
         }
       } catch (err) {
         console.log(err);
       }
     });
-
-    collectedInfo.push({ url, text: extractedText });
+    collectedInfo.push({ url, text: extractedText, textRatio });
     await browser.close();
   } catch (error) {
     collectedErrors.push({ url, error: error.message });
-    console.error(error);
   }
 }
 
