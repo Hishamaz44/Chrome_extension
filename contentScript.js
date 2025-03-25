@@ -27,20 +27,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function extractTextFromPage() {
   try {
-    let allText = document.querySelector("main, article").innerText;
+    //compare main and article tags to all text present.
+    //if ratio is less than 0.8 it means we might miss a good percentage of text,
+    //so we go for the entire text
+    let allText =
+      document.querySelector("main, article, section")?.innerText || " ";
     let allTextFull = document.body.innerText;
-    if (allText && allTextFull) {
-      textRatio = allText.length / allTextFull.length;
-      console.log(textRatio);
-      if (textRatio > 0.5) {
-        console.log("Code is not going in else clause");
-        return allText;
-      } else {
-        console.log("Code is going in else clause");
-        return allTextFull;
-      }
+    textRatio = allText.length / allTextFull.length;
+    console.log(textRatio);
+    if (textRatio > 0.8) {
+      console.log("Code is not going in else clause");
+      return allText;
     } else {
-      console.log("Code is going in 2nd else clause");
+      console.log("Code is going in else clause");
       return allTextFull;
     }
   } catch (err) {

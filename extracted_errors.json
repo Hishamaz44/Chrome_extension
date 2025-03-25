@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "url": "https://www.cnn.com",
+    "error": "Navigating frame was detached"
+  },
+  {
+    "url": "https://www.medium.com",
+    "error": "Navigating frame was detached"
+  }
+]

@@ -1,5 +1,7 @@
 import puppeteer from "puppeteer";
 import fs from "fs";
+import stopword from "stopword";
+import nlp from "compromise";
 
 let allText, allTextFull;
 let collectedInfo = [];
@@ -8,6 +10,8 @@ let collectedErrors = [];
 const websitesWithText = [
   "https://www.nytimes.com", // In-depth journalism
   "https://www.oecd.org",
+  "https://www.cnn.com",
+  "https://www.medium.com",
 ];
 const websitesWithText2 = [
   "https://www.wikipedia.org", // Encyclopedia
@@ -65,6 +69,7 @@ const websitesWithText2 = [
 
 async function testPuppeteer(url) {
   try {
+    // connect to extension and open puppeteer browser
     const pathToExtension =
       "/Users/hisha/OneDrive/Desktop/Chrome-extension/Chrome_extension/";
     const browser = await puppeteer.launch({
@@ -74,18 +79,22 @@ async function testPuppeteer(url) {
         `--load-extension=${pathToExtension}`,
       ],
     });
-
+    //go to chosen URL
     const page = await browser.newPage();
     await page.goto(url);
     await new Promise((resolve) => setTimeout(resolve, 4000));
+    //inject functionality into opened browser and tab
     let { extractedText, textRatio } = await page.evaluate(() => {
       try {
-        console.log("text goes into 2nd try");
-        allText = document.querySelector("main, article").innerText;
+        allText =
+          document.querySelector("main, article, section")?.innerText || " ";
         allTextFull = document.body.innerText;
+        //compare main and article tags to all text present.
+        //if ratio is less than 0.8 it means we might miss a good percentage of text,
+        //so we go for the entire text
         if (allText && allTextFull) {
           textRatio = allText.length / allTextFull.length;
-          if (textRatio > 0.5) {
+          if (textRatio > 0.8) {
             return { extractedText: allText, textRatio };
           } else {
             return { extractedText: allTextFull, textRatio };
@@ -95,19 +104,30 @@ async function testPuppeteer(url) {
         }
       } catch (err) {
         console.log(err);
+        return { error: err, textRatio };
       }
     });
-    collectedInfo.push({ url, text: extractedText, textRatio });
+    // save everything in collectedInfo array
+    let extractedText2 = cleanText(extractedText);
+    collectedInfo.push({ url, text: extractedText2, textRatio });
     await browser.close();
   } catch (error) {
     collectedErrors.push({ url, error: error.message });
   }
 }
 
+function cleanText(extractedText) {
+  let text = nlp(extractedText);
+  text.normalize;
+  console.log(text.out("text"));
+}
+
+//call function for multiple websites
 (async () => {
-  for (const url of websitesWithText2) {
+  for (const url of websitesWithText) {
     await testPuppeteer(url);
   }
+  //save files in .json file for analysis
   fs.writeFileSync(
     "extracted_text.json",
     JSON.stringify(collectedInfo, null, 2)
